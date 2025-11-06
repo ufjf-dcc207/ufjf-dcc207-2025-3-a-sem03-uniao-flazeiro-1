@@ -1,0 +1,70 @@
+.lista-jogadores {
+    width: 300px;
+    background: #1a1a1a;
+    border: 2px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.lista-jogadores h3 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    letter-spacing: 0.5px;
+}
+
+.jogadores-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jogador-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #0a0a0a;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.jogador-item:hover {
+    background: #1f1f1f;
+}
+
+.jogador-posicao {
+    color: #00d9ff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 35px;
+}
+
+.jogador-nome {
+    color: #fff;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.jogador-nota {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 50px;
+    text-align: right;
+}
+
+.jogador-nota.positiva {
+    color: #00b341;
+}
+
+.jogador-nota.negativa {
+    color: #e63946;
+}
+
+@media (max-width: 1024px) {
+    .lista-jogadores {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
