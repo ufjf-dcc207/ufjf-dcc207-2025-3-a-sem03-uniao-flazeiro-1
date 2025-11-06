@@ -21,7 +21,6 @@ export default function Jogador ({nome, posicao, nota, preco}: JogadorProps) {
                     {nota?.toFixed(2)}
                 </div>
             </div>
-
             <div className="precoJogador">{preco?.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}</div>
         </div>
     )
