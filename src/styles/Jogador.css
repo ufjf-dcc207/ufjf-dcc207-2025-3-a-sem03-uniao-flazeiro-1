@@ -12,7 +12,7 @@
   align-items: center;
   font-family: "Poppins", sans-serif;
   position: relative;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: all 0.2s;
   overflow: hidden;
 }
 
@@ -34,8 +34,9 @@
 }
 
 .jogador:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: #00d9ff;
+  box-shadow: 0 4px 16px rgba(0, 217, 255, 0.2);
 }
 
 

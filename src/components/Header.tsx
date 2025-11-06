@@ -4,7 +4,7 @@ export default function Header() {
     return (
         <header className="header">
             <div className="container">
-                <h1 className="logo">Fantasy FC</h1>
+                <h1 className="logo">Chapéu FC</h1>
                 <nav className="nav">
                     <a href="#" className="nav-link">Meu Time</a>
                     <a href="#" className="nav-link">Mercado</a>
