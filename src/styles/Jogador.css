@@ -21,6 +21,7 @@
     width: 100px;
     height: 145px;
     padding: 8px;
+    
   }
 }
 
@@ -120,3 +121,23 @@
 .notaFaixa.vermelha {
   background: #e63946;
 }
+
+.botao-trocar {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.95;
+}
+.botao-trocar:hover {
+    background: #cc0000;  
+    transform: translateX(-50%) scale(1.05); 
+    opacity: 1;
+}
+
