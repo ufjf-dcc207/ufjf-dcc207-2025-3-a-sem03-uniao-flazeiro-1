@@ -71,7 +71,7 @@ function App() {
         <section className="hero">
           <h2>Flazeiro FC</h2>
         </section>
-        <section className="stats">
+        <section className="stats" style={{marginBottom: '24px'}}>
           <div className="stat-card">
             <h3>Pontuação Total</h3>
             <p className="stat-value">{pontuacaoTotal.toFixed(1)}</p>
@@ -86,52 +86,54 @@ function App() {
           </div>
         </section>
         <div className="campo-container">
-          <Campo>
-            <div style={{display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap'}}>
-              <div onClick={() => setJogadorSelecionado(0)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 0 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[0].nome} posicao={jogadoresTitulares[0].posicao} nota={jogadoresTitulares[0].nota} preco={jogadoresTitulares[0].preco} />
+          <div>
+            <Campo>
+              <div style={{display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap'}}>
+                <div onClick={() => setJogadorSelecionado(0)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 0 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[0].nome} posicao={jogadoresTitulares[0].posicao} nota={jogadoresTitulares[0].nota} preco={jogadoresTitulares[0].preco} />
+                </div>
               </div>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
-              <div onClick={() => setJogadorSelecionado(1)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 1 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[1].nome} posicao={jogadoresTitulares[1].posicao} nota={jogadoresTitulares[1].nota} preco={jogadoresTitulares[1].preco} />
+              <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
+                <div onClick={() => setJogadorSelecionado(1)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 1 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[1].nome} posicao={jogadoresTitulares[1].posicao} nota={jogadoresTitulares[1].nota} preco={jogadoresTitulares[1].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(2)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 2 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[2].nome} posicao={jogadoresTitulares[2].posicao} nota={jogadoresTitulares[2].nota} preco={jogadoresTitulares[2].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(3)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 3 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[3].nome} posicao={jogadoresTitulares[3].posicao} nota={jogadoresTitulares[3].nota} preco={jogadoresTitulares[3].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(4)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 4 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[4].nome} posicao={jogadoresTitulares[4].posicao} nota={jogadoresTitulares[4].nota} preco={jogadoresTitulares[4].preco} />
+                </div>
               </div>
-              <div onClick={() => setJogadorSelecionado(2)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 2 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[2].nome} posicao={jogadoresTitulares[2].posicao} nota={jogadoresTitulares[2].nota} preco={jogadoresTitulares[2].preco} />
+              <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
+                <div onClick={() => setJogadorSelecionado(5)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 5 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[5].nome} posicao={jogadoresTitulares[5].posicao} nota={jogadoresTitulares[5].nota} preco={jogadoresTitulares[5].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(6)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 6 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[6].nome} posicao={jogadoresTitulares[6].posicao} nota={jogadoresTitulares[6].nota} preco={jogadoresTitulares[6].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(7)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 7 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[7].nome} posicao={jogadoresTitulares[7].posicao} nota={jogadoresTitulares[7].nota} preco={jogadoresTitulares[7].preco} />
+                </div>
               </div>
-              <div onClick={() => setJogadorSelecionado(3)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 3 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[3].nome} posicao={jogadoresTitulares[3].posicao} nota={jogadoresTitulares[3].nota} preco={jogadoresTitulares[3].preco} />
+              <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
+                <div onClick={() => setJogadorSelecionado(8)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 8 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[8].nome} posicao={jogadoresTitulares[8].posicao} nota={jogadoresTitulares[8].nota} preco={jogadoresTitulares[8].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(9)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 9 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[9].nome} posicao={jogadoresTitulares[9].posicao} nota={jogadoresTitulares[9].nota} preco={jogadoresTitulares[9].preco} />
+                </div>
+                <div onClick={() => setJogadorSelecionado(10)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 10 ? 0.6 : 1}}>
+                  <Jogador nome={jogadoresTitulares[10].nome} posicao={jogadoresTitulares[10].posicao} nota={jogadoresTitulares[10].nota} preco={jogadoresTitulares[10].preco} />
+                </div>
               </div>
-              <div onClick={() => setJogadorSelecionado(4)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 4 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[4].nome} posicao={jogadoresTitulares[4].posicao} nota={jogadoresTitulares[4].nota} preco={jogadoresTitulares[4].preco} />
-              </div>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
-              <div onClick={() => setJogadorSelecionado(5)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 5 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[5].nome} posicao={jogadoresTitulares[5].posicao} nota={jogadoresTitulares[5].nota} preco={jogadoresTitulares[5].preco} />
-              </div>
-              <div onClick={() => setJogadorSelecionado(6)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 6 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[6].nome} posicao={jogadoresTitulares[6].posicao} nota={jogadoresTitulares[6].nota} preco={jogadoresTitulares[6].preco} />
-              </div>
-              <div onClick={() => setJogadorSelecionado(7)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 7 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[7].nome} posicao={jogadoresTitulares[7].posicao} nota={jogadoresTitulares[7].nota} preco={jogadoresTitulares[7].preco} />
-              </div>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-around', gap: '12px', flexWrap: 'wrap'}}>
-              <div onClick={() => setJogadorSelecionado(8)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 8 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[8].nome} posicao={jogadoresTitulares[8].posicao} nota={jogadoresTitulares[8].nota} preco={jogadoresTitulares[8].preco} />
-              </div>
-              <div onClick={() => setJogadorSelecionado(9)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 9 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[9].nome} posicao={jogadoresTitulares[9].posicao} nota={jogadoresTitulares[9].nota} preco={jogadoresTitulares[9].preco} />
-              </div>
-              <div onClick={() => setJogadorSelecionado(10)} style={{cursor: 'pointer', opacity: jogadorSelecionado === 10 ? 0.6 : 1}}>
-                <Jogador nome={jogadoresTitulares[10].nome} posicao={jogadoresTitulares[10].posicao} nota={jogadoresTitulares[10].nota} preco={jogadoresTitulares[10].preco} />
-              </div>
-            </div>
-          </Campo>
+            </Campo>
+            <Banco jogadores={jogadoresReservas} onTrocar={trocarJogador} />
+          </div>
           <ListaJogadores jogadores={jogadoresTitulares} />
         </div>
-        <Banco jogadores={jogadoresReservas} onTrocar={trocarJogador} />
         
         
       </main>
