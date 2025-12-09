@@ -1,0 +1,43 @@
+.banco {
+    background: #1a1a1a;
+    border: 2px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
+}
+
+.banco h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.banco-lista {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.banco-lista::-webkit-scrollbar {
+    height: 8px;
+}
+
+.banco-lista::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.banco-lista::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.banco-lista::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
