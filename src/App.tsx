@@ -12,17 +12,7 @@ import { appReducer, initialState, type AppState } from './state/appReducer'
 const STORAGE_KEY = 'fantasy_state_v1';
 
 function App() {
-  const [state, dispatch] = useReducer(appReducer, initialState, (initial) => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved) as AppState;
-      } catch {
-        return initial;
-      }
-    }
-    return initial;
-  });
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
   const formacoesDisponiveis = [
     { nome: '4-3-3', linhas: [[1], [2, 3, 4, 5], [6, 7, 8], [9, 10, 11]] },
@@ -30,10 +20,23 @@ function App() {
     { nome: '3-5-2', linhas: [[1], [2, 3, 4], [5, 6, 7, 8, 9], [10, 11]] }
   ];
 
-  // Persistência em localStorage
+  // Hidratar estado do localStorage no mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const savedState = JSON.parse(saved) as AppState;
+        dispatch({ type: 'HIDRATAR_ESTADO', payload: savedState });
+      } catch (error) {
+        console.error('Erro ao carregar estado do localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Salvar estado no localStorage quando mudar
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+  }, [state.jogadoresTitulares, state.jogadoresReservas, state.formacao]);
 
   const obterFormacao = () => {
     return formacoesDisponiveis.find(f => f.nome === state.formacao) || formacoesDisponiveis[0];
