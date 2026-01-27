@@ -88,7 +88,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'DEFINIR_FORMACAO':
       return {
         ...state,
-        formacao: action.payload
+        formacao: action.payload,
+        jogadorSelecionado: null // Limpar seleção ao trocar formação
       };
 
     case 'TROCAR_COM_RESERVA': {
