@@ -6,6 +6,7 @@ import Jogador from './components/Jogador'
 import ListaJogadores from './components/ListaJogadores'
 import Banco from './components/Banco'
 import { useState } from 'react'
+import { posicoesCompativeis, trocarTitularPorReserva } from './domain/trocas'
 
 function App() {
   const todosJogadores = [
@@ -43,29 +44,21 @@ function App() {
 
   const trocarJogador = (indexReserva: number) => {
     if (jogadorSelecionado === null) return;
-    
+
     const titular = jogadoresTitulares[jogadorSelecionado];
     const reserva = jogadoresReservas[indexReserva];
-    
-    const posicoesCompativeis = (pos1: string, pos2: string) => {
-      if (pos1 === 'GOL' || pos2 === 'GOL') return pos1 === pos2;
-      if (pos1 === 'LAT' || pos2 === 'LAT') return pos1 === pos2;
-      if (pos1 === 'ZAG' || pos2 === 'ZAG') return pos1 === pos2;
-      if ((pos1 === 'VOL' || pos1 === 'MEI') && (pos2 === 'VOL' || pos2 === 'MEI')) return true;
-      if (pos1 === 'ATA' || pos2 === 'ATA') return pos1 === pos2;
-      return false;
-    };
-    
+
     if (!posicoesCompativeis(titular.posicao, reserva.posicao)) {
       return;
     }
-    
-    const novosTitulares = [...jogadoresTitulares];
-    const novasReservas = [...jogadoresReservas];
-    
-    novosTitulares[jogadorSelecionado] = reserva;
-    novasReservas[indexReserva] = titular;
-    
+
+    const { novosTitulares, novasReservas } = trocarTitularPorReserva(
+      jogadoresTitulares,
+      jogadoresReservas,
+      jogadorSelecionado,
+      indexReserva
+    );
+
     setJogadoresTitulares(novosTitulares);
     setJogadoresReservas(novasReservas);
     setJogadorSelecionado(null);
