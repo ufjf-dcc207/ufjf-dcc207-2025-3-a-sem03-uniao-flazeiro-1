@@ -5,7 +5,7 @@ import Campo from './components/Campo'
 import Jogador from './components/Jogador'
 import ListaJogadores from './components/ListaJogadores'
 import Banco from './components/Banco'
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useRef } from 'react'
 import { posicoesCompativeis } from './domain/trocas'
 import { appReducer, initialState, type AppState } from './state/appReducer'
 
@@ -13,6 +13,7 @@ const STORAGE_KEY = 'fantasy_state_v1';
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  const refsTitulares = useRef<Map<number, HTMLDivElement>>(new Map());
 
   const formacoesDisponiveis = [
     { nome: '4-3-3', linhas: [[1], [2, 3, 4, 5], [6, 7, 8], [9, 10, 11]] },
@@ -37,6 +38,16 @@ function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state.jogadoresTitulares, state.jogadoresReservas, state.formacao]);
+
+  // Scroll automático quando selecionar titular
+  useEffect(() => {
+    if (state.jogadorSelecionado !== null) {
+      const element = refsTitulares.current.get(state.jogadorSelecionado);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [state.jogadorSelecionado]);
 
   const obterFormacao = () => {
     return formacoesDisponiveis.find(f => f.nome === state.formacao) || formacoesDisponiveis[0];
@@ -111,7 +122,18 @@ function App() {
                   {linha.map((jogadorIndex) => {
                     const index = jogadorIndex - 1;
                     return (
-                      <div key={index} onClick={() => dispatch({ type: 'SELECIONAR_TITULAR', payload: index })} style={{cursor: 'pointer', opacity: state.jogadorSelecionado === index ? 0.6 : 1}}>
+                      <div
+                        key={index}
+                        ref={(el) => {
+                          if (el) {
+                            refsTitulares.current.set(index, el);
+                          } else {
+                            refsTitulares.current.delete(index);
+                          }
+                        }}
+                        onClick={() => dispatch({ type: 'SELECIONAR_TITULAR', payload: index })}
+                        style={{cursor: 'pointer', opacity: state.jogadorSelecionado === index ? 0.6 : 1}}
+                      >
                         <Jogador nome={state.jogadoresTitulares[index].nome} posicao={state.jogadoresTitulares[index].posicao} nota={state.jogadoresTitulares[index].nota} preco={state.jogadoresTitulares[index].preco} />
                       </div>
                     );
