@@ -7,13 +7,13 @@ import ListaJogadores from './components/ListaJogadores'
 import Banco from './components/Banco'
 import { useReducer, useEffect, useRef } from 'react'
 import { posicoesCompativeis } from './domain/trocas'
-import { appReducer, initialState, type AppState } from './state/appReducer'
-
-const STORAGE_KEY = 'fantasy_state_v1';
+import { appReducer, initialState } from './state/appReducer'
+import { carregarEstado, salvarEstado } from './domain/persistencia'
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const refsTitulares = useRef<Map<number, HTMLDivElement>>(new Map());
+  const primeiroRender = useRef(true);
 
   const formacoesDisponiveis = [
     { nome: '4-3-3', linhas: [[1], [2, 3, 4, 5], [6, 7, 8], [9, 10, 11]] },
@@ -23,20 +23,19 @@ function App() {
 
   // Hidratar estado do localStorage no mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const savedState = JSON.parse(saved) as AppState;
-        dispatch({ type: 'HIDRATAR_ESTADO', payload: savedState });
-      } catch (error) {
-        console.error('Erro ao carregar estado do localStorage:', error);
-      }
+    const estadoSalvo = carregarEstado();
+    if (estadoSalvo) {
+      dispatch({ type: 'HIDRATAR_ESTADO', payload: estadoSalvo });
     }
   }, []);
 
-  // Salvar estado no localStorage quando mudar
+  // Salvar estado no localStorage quando mudar (pula primeiro render)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (primeiroRender.current) {
+      primeiroRender.current = false;
+      return;
+    }
+    salvarEstado(state);
   }, [state.jogadoresTitulares, state.jogadoresReservas, state.formacao]);
 
   // Scroll automático quando selecionar titular
