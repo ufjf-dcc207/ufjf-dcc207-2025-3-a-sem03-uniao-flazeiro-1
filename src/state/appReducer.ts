@@ -12,6 +12,8 @@ export type AppState = {
   jogadoresReservas: Jogador[];
   jogadorSelecionado: number | null;
   formacao: Formacao;
+  carregando: boolean;
+  erro: string | null;
 };
 
 // ============================================================================
@@ -38,11 +40,31 @@ type HidratarEstadoAction = {
   payload: Partial<AppState>;
 };
 
+type CarregarJogadoresInicioAction = {
+  type: 'CARREGAR_JOGADORES_INICIO';
+};
+
+type CarregarJogadoresSucessoAction = {
+  type: 'CARREGAR_JOGADORES_SUCESSO';
+  payload: {
+    titulares: Jogador[];
+    reservas: Jogador[];
+  };
+};
+
+type CarregarJogadoresErroAction = {
+  type: 'CARREGAR_JOGADORES_ERRO';
+  payload: string; // mensagem de erro
+};
+
 export type AppAction =
   | SelecionarTitularAction
   | DefinirFormacaoAction
   | TrocarComReservaAction
-  | HidratarEstadoAction;
+  | HidratarEstadoAction
+  | CarregarJogadoresInicioAction
+  | CarregarJogadoresSucessoAction
+  | CarregarJogadoresErroAction;
 
 // ============================================================================
 // INITIAL STATE
@@ -70,7 +92,9 @@ export const initialState: AppState = {
   jogadoresTitulares: todosJogadores.slice(0, 11),
   jogadoresReservas: todosJogadores.slice(11),
   jogadorSelecionado: null,
-  formacao: '4-3-3'
+  formacao: '4-3-3',
+  carregando: false,
+  erro: null
 };
 
 // ============================================================================
@@ -171,6 +195,29 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         ...payload
       };
     }
+
+    case 'CARREGAR_JOGADORES_INICIO':
+      return {
+        ...state,
+        carregando: true,
+        erro: null
+      };
+
+    case 'CARREGAR_JOGADORES_SUCESSO':
+      return {
+        ...state,
+        jogadoresTitulares: action.payload.titulares,
+        jogadoresReservas: action.payload.reservas,
+        carregando: false,
+        erro: null
+      };
+
+    case 'CARREGAR_JOGADORES_ERRO':
+      return {
+        ...state,
+        carregando: false,
+        erro: action.payload
+      };
 
     default:
       return state;

@@ -9,6 +9,7 @@ import { useReducer, useEffect, useRef } from 'react'
 import { posicoesCompativeis } from './domain/trocas'
 import { appReducer, initialState } from './state/appReducer'
 import { carregarEstado, salvarEstado } from './domain/persistencia'
+import { buscarJogadoresAPI, selecionarTimePadrao } from './domain/api'
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -21,11 +22,36 @@ function App() {
     { nome: '3-5-2', linhas: [[1], [2, 3, 4], [5, 6, 7, 8, 9], [10, 11]] }
   ];
 
-  // Hidratar estado do localStorage no mount
+  // Hidratar estado do localStorage ou buscar da API no mount
   useEffect(() => {
     const estadoSalvo = carregarEstado();
+
     if (estadoSalvo) {
+      // Se tem dados salvos, usar eles
       dispatch({ type: 'HIDRATAR_ESTADO', payload: estadoSalvo });
+    } else {
+      // Se não tem dados salvos, buscar da API
+      const buscarJogadores = async () => {
+        dispatch({ type: 'CARREGAR_JOGADORES_INICIO' });
+
+        try {
+          const jogadores = await buscarJogadoresAPI();
+          const { titulares, reservas } = selecionarTimePadrao(jogadores);
+
+          dispatch({
+            type: 'CARREGAR_JOGADORES_SUCESSO',
+            payload: { titulares, reservas }
+          });
+        } catch (erro) {
+          const mensagem = erro instanceof Error ? erro.message : 'Erro ao carregar jogadores';
+          dispatch({
+            type: 'CARREGAR_JOGADORES_ERRO',
+            payload: mensagem
+          });
+        }
+      };
+
+      buscarJogadores();
     }
   }, []);
 
@@ -79,6 +105,22 @@ function App() {
         <section className="hero">
           <h2>Flazeiro FC</h2>
         </section>
+
+        {/* Feedback de carregamento */}
+        {state.carregando && (
+          <div style={{textAlign: 'center', padding: '20px', color: '#00d9ff'}}>
+            <p>Carregando jogadores da API do Cartola FC...</p>
+          </div>
+        )}
+
+        {/* Feedback de erro */}
+        {state.erro && (
+          <div style={{textAlign: 'center', padding: '20px', color: '#ff4444', background: '#2a1a1a', borderRadius: '8px', margin: '0 20px 20px'}}>
+            <p><strong>Erro:</strong> {state.erro}</p>
+            <p style={{fontSize: '0.9em', marginTop: '10px'}}>Usando dados locais como fallback.</p>
+          </div>
+        )}
+
         <div style={{display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '20px'}}>
           {formacoesDisponiveis.map(f => (
             <button
