@@ -33,10 +33,16 @@ type TrocarComReservaAction = {
   payload: number; // indexReserva
 };
 
+type HidratarEstadoAction = {
+  type: 'HIDRATAR_ESTADO';
+  payload: Partial<AppState>;
+};
+
 export type AppAction =
   | SelecionarTitularAction
   | DefinirFormacaoAction
-  | TrocarComReservaAction;
+  | TrocarComReservaAction
+  | HidratarEstadoAction;
 
 // ============================================================================
 // INITIAL STATE
@@ -115,6 +121,53 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         jogadoresTitulares: novosTitulares,
         jogadoresReservas: novasReservas,
         jogadorSelecionado: null // Desmarca após trocar
+      };
+    }
+
+    case 'HIDRATAR_ESTADO': {
+      const payload = action.payload;
+
+      // Validação básica: payload deve ser um objeto
+      if (!payload || typeof payload !== 'object') {
+        return state;
+      }
+
+      // Validar jogadoresTitulares se presente
+      if (payload.jogadoresTitulares !== undefined) {
+        if (!Array.isArray(payload.jogadoresTitulares)) {
+          return state;
+        }
+      }
+
+      // Validar jogadoresReservas se presente
+      if (payload.jogadoresReservas !== undefined) {
+        if (!Array.isArray(payload.jogadoresReservas)) {
+          return state;
+        }
+      }
+
+      // Validar formacao se presente
+      if (payload.formacao !== undefined) {
+        const formacoesValidas: Formacao[] = ['4-3-3', '4-4-2', '3-5-2'];
+        if (!formacoesValidas.includes(payload.formacao)) {
+          return state;
+        }
+      }
+
+      // Validar jogadorSelecionado se presente
+      if (payload.jogadorSelecionado !== undefined) {
+        if (
+          payload.jogadorSelecionado !== null &&
+          typeof payload.jogadorSelecionado !== 'number'
+        ) {
+          return state;
+        }
+      }
+
+      // Se passou nas validações, mesclar com state atual
+      return {
+        ...state,
+        ...payload
       };
     }
 
