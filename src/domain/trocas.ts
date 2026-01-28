@@ -1,9 +1,13 @@
 // Tipo do jogador
 export type Jogador = {
+  id: number;
   posicao: string;
   nome: string;
   nota: number;
   preco: number;
+  clube_id: number;
+  clube_nome: string;
+  foto?: string;
 };
 
 /**

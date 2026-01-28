@@ -18,7 +18,7 @@ export default function Banco({ jogadores, onTrocar }: BancoProps) {
         <div className="banco">
             <h3>BANCO DE RESERVAS</h3>
             <div className="banco-lista">
-                {jogadores.map((jogador, index) => (
+                {jogadores.filter(j => j).map((jogador, index) => (
                     <div key={index} onClick={() => onTrocar(index)} style={{cursor: 'pointer'}}>
                         <Jogador nome={jogador.nome} posicao={jogador.posicao} nota={jogador.nota} preco={jogador.preco} />
                     </div>

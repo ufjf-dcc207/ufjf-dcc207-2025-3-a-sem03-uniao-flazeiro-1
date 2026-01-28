@@ -1,5 +1,7 @@
 import type { Jogador } from '../domain/trocas';
 import { posicoesCompativeis, trocarTitularPorReserva } from '../domain/trocas';
+import type { Clube } from '../domain/api';
+import { encontrarPrimeiraVagaCompativel } from '../domain/formacoes';
 
 // ============================================================================
 // TYPES
@@ -14,6 +16,8 @@ export type AppState = {
   formacao: Formacao;
   carregando: boolean;
   erro: string | null;
+  todosJogadores: Jogador[];
+  clubes: Clube[];
 };
 
 // ============================================================================
@@ -49,12 +53,34 @@ type CarregarJogadoresSucessoAction = {
   payload: {
     titulares: Jogador[];
     reservas: Jogador[];
+    todosJogadores: Jogador[];
+    clubes: Clube[];
   };
 };
 
 type CarregarJogadoresErroAction = {
   type: 'CARREGAR_JOGADORES_ERRO';
   payload: string; // mensagem de erro
+};
+
+type AdicionarTitularAction = {
+  type: 'ADICIONAR_TITULAR';
+  payload: Jogador;
+};
+
+type RemoverTitularAction = {
+  type: 'REMOVER_TITULAR';
+  payload: number; // index do titular
+};
+
+type AdicionarReservaAction = {
+  type: 'ADICIONAR_RESERVA';
+  payload: Jogador;
+};
+
+type RemoverReservaAction = {
+  type: 'REMOVER_RESERVA';
+  payload: number; // index da reserva
 };
 
 export type AppAction =
@@ -64,37 +90,43 @@ export type AppAction =
   | HidratarEstadoAction
   | CarregarJogadoresInicioAction
   | CarregarJogadoresSucessoAction
-  | CarregarJogadoresErroAction;
+  | CarregarJogadoresErroAction
+  | AdicionarTitularAction
+  | RemoverTitularAction
+  | AdicionarReservaAction
+  | RemoverReservaAction;
 
 // ============================================================================
 // INITIAL STATE
 // ============================================================================
 
 const todosJogadores: Jogador[] = [
-  { posicao: 'GOL', nome: 'Cássio', nota: 7.2, preco: 6.8 },
-  { posicao: 'LAT', nome: 'Kaiki', nota: 6.5, preco: 5.2 },
-  { posicao: 'ZAG', nome: 'Leo Ortiz', nota: 7.2, preco: 5.8 },
-  { posicao: 'ZAG', nome: 'Fabrício Bruno', nota: 6.8, preco: 7.5 },
-  { posicao: 'LAT', nome: 'Alex Sandro', nota: 6.3, preco: 4.2 },
-  { posicao: 'VOL', nome: 'Matheus Henrique', nota: 7.1, preco: 7.5 },
-  { posicao: 'MEI', nome: 'Arrascaeta', nota: 8.1, preco: 18.4 },
-  { posicao: 'MEI', nome: 'Matheus Pereira', nota: 8.3, preco: 19.2 },
-  { posicao: 'ATA', nome: 'Kaio Jorge', nota: 6.7, preco: 17.9 },
-  { posicao: 'ATA', nome: 'Pedro', nota: 8.5, preco: 16.8 },
-  { posicao: 'ATA', nome: 'Juninho Xé', nota: 7.0, preco: 8.3 },
-  { posicao: 'GOL', nome: 'Rossi', nota: 6.5, preco: 5.0 },
-  { posicao: 'ZAG', nome: 'David Luiz', nota: 6.2, preco: 4.5 },
-  { posicao: 'MEI', nome: 'Gerson', nota: 7.5, preco: 12.3 },
-  { posicao: 'ATA', nome: 'Gabigol', nota: 7.8, preco: 15.5 }
+  { id: 1, posicao: 'GOL', nome: 'Cássio', nota: 7.2, preco: 6.8, clube_id: 264, clube_nome: 'Corinthians' },
+  { id: 2, posicao: 'LAT', nome: 'Kaiki', nota: 6.5, preco: 5.2, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 3, posicao: 'ZAG', nome: 'Leo Ortiz', nota: 7.2, preco: 5.8, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 4, posicao: 'ZAG', nome: 'Fabrício Bruno', nota: 6.8, preco: 7.5, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 5, posicao: 'LAT', nome: 'Alex Sandro', nota: 6.3, preco: 4.2, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 6, posicao: 'VOL', nome: 'Matheus Henrique', nota: 7.1, preco: 7.5, clube_id: 263, clube_nome: 'Botafogo' },
+  { id: 7, posicao: 'MEI', nome: 'Arrascaeta', nota: 8.1, preco: 18.4, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 8, posicao: 'MEI', nome: 'Matheus Pereira', nota: 8.3, preco: 19.2, clube_id: 283, clube_nome: 'Cruzeiro' },
+  { id: 9, posicao: 'ATA', nome: 'Kaio Jorge', nota: 6.7, preco: 17.9, clube_id: 283, clube_nome: 'Cruzeiro' },
+  { id: 10, posicao: 'ATA', nome: 'Pedro', nota: 8.5, preco: 16.8, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 11, posicao: 'ATA', nome: 'Juninho Xé', nota: 7.0, preco: 8.3, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 12, posicao: 'GOL', nome: 'Rossi', nota: 6.5, preco: 5.0, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 13, posicao: 'ZAG', nome: 'David Luiz', nota: 6.2, preco: 4.5, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 14, posicao: 'MEI', nome: 'Gerson', nota: 7.5, preco: 12.3, clube_id: 262, clube_nome: 'Flamengo' },
+  { id: 15, posicao: 'ATA', nome: 'Gabigol', nota: 7.8, preco: 15.5, clube_id: 262, clube_nome: 'Flamengo' }
 ];
 
 export const initialState: AppState = {
-  jogadoresTitulares: todosJogadores.slice(0, 11),
-  jogadoresReservas: todosJogadores.slice(11),
+  jogadoresTitulares: [],  // Começar vazio para permitir montar do zero
+  jogadoresReservas: [],
   jogadorSelecionado: null,
   formacao: '4-3-3',
   carregando: false,
-  erro: null
+  erro: null,
+  todosJogadores: todosJogadores, // Fallback caso API falhe
+  clubes: []
 };
 
 // ============================================================================
@@ -208,6 +240,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         jogadoresTitulares: action.payload.titulares,
         jogadoresReservas: action.payload.reservas,
+        todosJogadores: action.payload.todosJogadores,
+        clubes: action.payload.clubes,
         carregando: false,
         erro: null
       };
@@ -218,6 +252,73 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         carregando: false,
         erro: action.payload
       };
+
+    case 'ADICIONAR_TITULAR': {
+      // Validação: não adicionar jogador duplicado
+      if (state.jogadoresTitulares.find(j => j && j.id === action.payload.id)) {
+        return state;
+      }
+      if (state.jogadoresReservas.find(j => j && j.id === action.payload.id)) {
+        return state;
+      }
+
+      // Encontrar primeira posição vazia compatível com a posição do jogador
+      const indexCompativel = encontrarPrimeiraVagaCompativel(
+        action.payload.posicao,
+        state.jogadoresTitulares,
+        state.formacao
+      );
+
+      // Se não encontrou posição compatível, não adicionar
+      if (indexCompativel === -1) {
+        return state;
+      }
+
+      // Criar array com 11 posições se ainda não tem
+      const novosTitulares = [...state.jogadoresTitulares];
+      while (novosTitulares.length < 11) {
+        novosTitulares.push(undefined as any);
+      }
+
+      // Adicionar jogador na posição compatível encontrada
+      novosTitulares[indexCompativel] = action.payload;
+
+      return {
+        ...state,
+        jogadoresTitulares: novosTitulares
+      };
+    }
+
+    case 'REMOVER_TITULAR': {
+      const novosTitulares = state.jogadoresTitulares.filter((_, index) => index !== action.payload);
+
+      return {
+        ...state,
+        jogadoresTitulares: novosTitulares,
+        jogadorSelecionado: null // Limpar seleção
+      };
+    }
+
+    case 'ADICIONAR_RESERVA': {
+      // Validação: não adicionar jogador duplicado
+      if (state.jogadoresReservas.find(j => j.id === action.payload.id)) {
+        return state;
+      }
+
+      return {
+        ...state,
+        jogadoresReservas: [...state.jogadoresReservas, action.payload]
+      };
+    }
+
+    case 'REMOVER_RESERVA': {
+      const novasReservas = state.jogadoresReservas.filter((_, index) => index !== action.payload);
+
+      return {
+        ...state,
+        jogadoresReservas: novasReservas
+      };
+    }
 
     default:
       return state;

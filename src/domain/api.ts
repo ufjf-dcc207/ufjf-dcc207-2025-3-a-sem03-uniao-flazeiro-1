@@ -23,9 +23,28 @@ type PosicaoAPI = {
   abreviacao: string;
 };
 
+type ClubeAPI = {
+  id: number;
+  nome: string;
+  abreviacao: string;
+  escudos?: {
+    '60x60'?: string;
+    '45x45'?: string;
+    '30x30'?: string;
+  };
+};
+
+export type Clube = {
+  id: number;
+  nome: string;
+  abreviacao: string;
+  escudo?: string;
+};
+
 type CartolaResponse = {
   atletas: AtletaAPI[];
   posicoes: Record<string, PosicaoAPI>;
+  clubes: Record<string, ClubeAPI>;
 };
 
 // ============================================================================
@@ -51,19 +70,25 @@ const MAPA_POSICOES: Record<number, string> = {
 /**
  * Transforma um atleta da API para o formato do app
  */
-function transformarAtleta(atleta: AtletaAPI): Jogador {
+function transformarAtleta(atleta: AtletaAPI, clubes: Record<string, ClubeAPI>): Jogador {
+  const clube = clubes[atleta.clube_id];
+
   return {
+    id: atleta.atleta_id,
     posicao: MAPA_POSICOES[atleta.posicao_id] || 'MEI',
     nome: atleta.apelido,
     nota: atleta.media_num || 0,
-    preco: atleta.preco_num || 0
+    preco: atleta.preco_num || 0,
+    clube_id: atleta.clube_id,
+    clube_nome: clube?.nome || 'Desconhecido',
+    foto: atleta.foto
   };
 }
 
 /**
- * Busca jogadores da API do Cartola FC
+ * Busca jogadores e clubes da API do Cartola FC
  */
-export async function buscarJogadoresAPI(): Promise<Jogador[]> {
+export async function buscarJogadoresAPI(): Promise<{ jogadores: Jogador[], clubes: Clube[] }> {
   const response = await fetch('https://api.cartola.globo.com/atletas/mercado');
 
   if (!response.ok) {
@@ -75,9 +100,17 @@ export async function buscarJogadoresAPI(): Promise<Jogador[]> {
   // Transformar todos os atletas
   const jogadores = dados.atletas
     .filter(atleta => atleta.status_id === 7) // Apenas jogadores prováveis
-    .map(transformarAtleta);
+    .map(atleta => transformarAtleta(atleta, dados.clubes));
 
-  return jogadores;
+  // Transformar clubes
+  const clubes: Clube[] = Object.values(dados.clubes).map(clube => ({
+    id: clube.id,
+    nome: clube.nome,
+    abreviacao: clube.abreviacao,
+    escudo: clube.escudos?.['60x60']
+  }));
+
+  return { jogadores, clubes };
 }
 
 /**

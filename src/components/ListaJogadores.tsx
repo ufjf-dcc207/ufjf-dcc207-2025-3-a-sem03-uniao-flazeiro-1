@@ -11,11 +11,14 @@ interface ListaJogadoresProps {
 }
 
 export default function ListaJogadores({ jogadores }: ListaJogadoresProps) {
+    // Filtrar apenas jogadores que existem (não são undefined/null)
+    const jogadoresValidos = jogadores.filter(j => j);
+
     return (
         <div className="lista-jogadores">
             <h3>SUAS PARCIAIS</h3>
             <div className="jogadores-lista">
-                {jogadores.map((jogador, index) => (
+                {jogadoresValidos.map((jogador, index) => (
                     <div key={index} className="jogador-item">
                         <span className="jogador-posicao">{jogador.posicao}</span>
                         <span className="jogador-nome">{jogador.nome}</span>
